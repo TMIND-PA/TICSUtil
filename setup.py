@@ -7,7 +7,7 @@ setup(name='TICSUtil',
       author_email='sunil.goothy@tmeic.in',
       install_requires=[
         "getmac>=0.8.2",
-        "cryptography>=2.9.2",
+        "cryptography>=2.9.2"
         ]
       packages=find_packages(),
     )
