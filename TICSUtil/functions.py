@@ -1,8 +1,7 @@
 from datetime import datetime
-import configparser
+import configparser, socket, base64
 from cryptography.fernet import Fernet
 from getmac import get_mac_address
-import socket
 
 def log_time():
     """ Returns date time with ms. Can be used for logging messages"""
