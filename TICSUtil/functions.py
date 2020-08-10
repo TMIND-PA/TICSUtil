@@ -15,6 +15,12 @@ def readconfigfile(filename,section,key):
     config.read(filename,  encoding='utf-8')
     return config.get(section, key)
 
+def base_encode(input):
+    return base64.encodebytes(input)
+
+def base_decode(input):
+    return base64.decodebytes(input)
+
 def decrypt(password):
     encoded_key = b'U3FidkxCQ1dMSFBtcTZwU3VjVnFlaFNQRU45RHQwOGJ2azFScG0wT2ZaWT0=\n'
     key = base_decode(encoded_key)
