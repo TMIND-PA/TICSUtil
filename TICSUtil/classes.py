@@ -29,26 +29,26 @@ class TICSLogger:
         self.file_handler.setFormatter(self.log_formatter)
         self.file_handler.setLevel(logging.DEBUG)
 
-        self.TICSLog = logging.getLogger(loggername)
-        self.TICSLog.setLevel(logging.DEBUG)
+        self.setLog = logging.getLogger(loggername)
+        self.setLog.setLevel(logging.DEBUG)
 
-        self.TICSLog.addHandler(self.file_handler)
-        self.TICSLog.addHandler(self.console_handler)
+        self.setLog.addHandler(self.file_handler)
+        self.setLog.addHandler(self.console_handler)
 
     def set_debug(self):
-        self.TICSLog.setLevel(logging.DEBUG)
+        self.setLog.setLevel(logging.DEBUG)
         
     def set_info(self):
-        self.TICSLog.setLevel(logging.INFO)
+        self.setLog.setLevel(logging.INFO)
 
     def set_warning(self):
-        self.TICSLog.setLevel(logging.WARNING)
+        self.setLog.setLevel(logging.WARNING)
 
     def set_error(self):
-        self.TICSLog.setLevel(logging.ERROR)
+        self.setLog.setLevel(logging.ERROR)
 
     def set_critical(self):
-        self.TICSLog.setLevel(logging.CRITICAL)
+        self.setLog.setLevel(logging.CRITICAL)
     
     def set_maxSize(self, maxBytes):
         self.file_handler.maxBytes = maxBytes
