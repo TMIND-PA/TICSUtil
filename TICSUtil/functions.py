@@ -28,7 +28,7 @@ def decrypt(password, ipaddress):
         else:
             if password.__class__ == str:
                 token = f.decrypt(password.encode('utf-8'))
-            elif if password.__class__ == bytes:
+            elif password.__class__ == bytes:
                 token = f.decrypt(password)
             else:
                 password = str(password)
