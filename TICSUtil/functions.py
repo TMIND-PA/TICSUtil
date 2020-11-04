@@ -43,6 +43,6 @@ def decrypt(password, ipaddress):
 
 def log_internal(rclient, msg, priority, value=0):
     func_name = inspect.stack()[1].function
-    print(f'Log_Internal function name:{func_name}')
+    #print(f'Log_Internal function name:{func_name}')
     alm_data = {'alm_tag':'internal' ,'value':value, 'alm_name':func_name, 'alm_desc':msg, 'alm_priority':priority}
     rclient.publish('alarm_queue', str(alm_data))
