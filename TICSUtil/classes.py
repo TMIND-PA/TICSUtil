@@ -50,6 +50,7 @@ class TICSLogger:
     def set_dbglevel_critical(self):
         self.get_log.setLevel(logging.CRITICAL)
 
+    #set level of console logging
     def console_dbglevel_debug(self):
         self.console_handler.setLevel(logging.DEBUG)
 
@@ -65,8 +66,52 @@ class TICSLogger:
     def console_dbglevel_critical(self):
         self.console_handler.setLevel(logging.CRITICAL)
 
+    # set level of logfile logging
+    def logfile_dbglevel_debug(self):
+        self.file_handler.setLevel(logging.DEBUG)
+
+    def logfile_dbglevel_info(self):
+        self.file_handler.setLevel(logging.INFO)
+
+    def logfile_dbglevel_warning(self):
+        self.file_handler.setLevel(logging.WARNING)
+
+    def logfile_dbglevel_error(self):
+        self.file_handler.setLevel(logging.ERROR)
+
+    def logfile_dbglevel_critical(self):
+        self.file_handler.setLevel(logging.CRITICAL)
+
     def set_maxSize(self, maxBytes):
         self.file_handler.maxBytes = maxBytes
 
     def set_backupCount(self, backupCount):
         self.file_handler.backupCount = backupCount
+
+    def console_dbglevel(self, levelname):
+        if levelname.lower()=='debug':
+            self.console_handler.setLevel(logging.DEBUG)
+        elif levelname.lower()=='info':
+            self.console_handler.setLevel(logging.INFO)
+        elif levelname.lower()=='warning':
+            self.console_handler.setLevel(logging.WARNING)
+        elif levelname.lower()=='error':
+            self.console_handler.setLevel(logging.ERROR)
+        elif levelname.lower()=='critical':
+            self.console_handler.setLevel(logging.CRITICAL)
+        else:
+            print(f'Level is not defined in console_dbglevel')
+
+    def file_dbglevel(self, levelname):
+        if levelname.lower()=='debug':
+            self.file_handler.setLevel(logging.DEBUG)
+        elif levelname.lower()=='info':
+            self.file_handler.setLevel(logging.INFO)
+        elif levelname.lower()=='warning':
+            self.file_handler.setLevel(logging.WARNING)
+        elif levelname.lower()=='error':
+            self.file_handler.setLevel(logging.ERROR)
+        elif levelname.lower()=='critical':
+            self.file_handler.setLevel(logging.CRITICAL)
+        else:
+            print(f'Level is not defined in file_dbglevel')
