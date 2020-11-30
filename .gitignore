@@ -142,3 +142,4 @@ TICS*.bak
 TICSDeploy/release/TICS/TICS*/
 TICSDB/database_22Oct2020.db
 TICSDB/database_sim.db
+*.log*

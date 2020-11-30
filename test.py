@@ -1,10 +1,9 @@
 from TICSUtil import log_time, log_internal, TICSLogger
 
-print(log_time(), "Starting test script...")
+# print(log_time(), "Starting test script...")
 
 Logger = TICSLogger()
 Log = Logger.get_log
-
 Log.info(f'Logger Configured...')
 Log.log(50 , f'Sample LOG message')
 Log.debug(f'Sample DEBUG message')
@@ -31,4 +30,3 @@ class TestClass:
 
 test1 = TestClass()
 test1.test_func()
-

@@ -4,7 +4,11 @@ from logging.handlers import RotatingFileHandler
 class TICSLogger:
     def __init__(self):
         
-        self.log_formatter = logging.Formatter('%(asctime)s - [%(funcName)-16s] - [%(lineno)d] - %(levelname)s - %(message)s')
+        # logging.basicConfig(datefmt='%d-%m-%Y %H:%M:%S')
+
+        # self.log_formatter = logging.Formatter('%(asctime)s - [%(funcName)-16s] - [%(lineno)4d] - [%(levelname)8s] - %(message)s')
+        # self.log_formatter = logging.Formatter('[{asctime}.{msecs:03.0f}] [{funcName:^16s}] [{lineno:04d}] [{levelname:^9s}] {message}', style='{', datefmt="%Y-%m-%d %H:%M:%S")
+        self.log_formatter = logging.Formatter('{asctime}.{msecs:03.0f} ~ {funcName:^16s} ~ {lineno:04d} ~ {levelname:^9s} ~ {message}', style='{', datefmt="%Y-%m-%d %H:%M:%S")
 
         # Try to get configurations from os environment variables
         log_file_name = os.environ['LOG_FILENAME'] if 'LOG_FILENAME' in os.environ else 'TICSLog.log'
