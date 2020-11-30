@@ -13,6 +13,13 @@ def readconfigfile(filename,section,key):
     config.read(filename,  encoding='utf-8')
     return config.get(section, key)
 
+def writeconfigfile(filename,section,key,value):
+    config = configparser.ConfigParser()
+    config.read(filename,  encoding='utf-8')
+    config.set(section, key, value)
+    with open(filename, 'w') as configfile:
+        config.write(configfile)
+        
 def decrypt(password, ipaddress):
     encoded_key = b'U3FidkxCQ1dMSFBtcTZwU3VjVnFlaFNQRU45RHQwOGJ2azFScG0wT2ZaWT0=\n'
     key = base64.decodebytes(encoded_key)
