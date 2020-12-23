@@ -46,10 +46,10 @@ def decrypt(password, ipaddress):
         output = None
     return output
 
-def log_internal(rclient, msg, priority, value=0):
+def alarm_internal(rclient, tag='internal', msg='', priority='Low', value=0):
     func_name = inspect.stack()[1].function
     alm_ts = str(datetime.now())
-    alm_data = {'alm_tag':'internal' ,'value':value, 'alm_name':func_name, 'alm_desc':msg, 'alm_priority':priority, 'alm_ts':alm_ts}
+    alm_data = {'alm_tag':tag ,'value':value, 'alm_name':func_name, 'alm_desc':msg, 'alm_priority':priority, 'alm_ts':alm_ts}
     rclient.publish('alarm_queue', str(alm_data))
 
 def get_config_db(session, tablename):
