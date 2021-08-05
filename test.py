@@ -1,4 +1,4 @@
-from TICSUtil import log_time, log_internal, TICSLogger
+from TICSUtil import log_time, TICSLogger, emoji
 
 # print(log_time(), "Starting test script...")
 
@@ -10,6 +10,7 @@ Log.debug(f'Sample DEBUG message')
 Log.info(f'Sample INFO message')
 Log.warning(f'Sample WARNING message')
 Log.critical(f'Sample CRITICAL message')
+Log.info(emoji["namaste"])
 
 try:
     a = 1/0

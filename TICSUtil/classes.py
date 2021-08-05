@@ -4,18 +4,18 @@ from logging.handlers import RotatingFileHandler
 class TICSLogger:
     def __init__(self):
         
-        # logging.basicConfig(datefmt='%d-%m-%Y %H:%M:%S')
+        # logging.basicConfig(datefmt="%d-%m-%Y %H:%M:%S")
 
-        # self.log_formatter = logging.Formatter('%(asctime)s - [%(funcName)-16s] - [%(lineno)4d] - [%(levelname)8s] - %(message)s')
-        # self.log_formatter = logging.Formatter('[{asctime}.{msecs:03.0f}] [{funcName:^16s}] [{lineno:04d}] [{levelname:^9s}] {message}', style='{', datefmt="%Y-%m-%d %H:%M:%S")
-        self.log_formatter = logging.Formatter('{asctime}.{msecs:03.0f} | {funcName:^16s} | {lineno:04d} | {levelname:^9s} | {message}', style='{', datefmt="%Y-%m-%d %H:%M:%S")
+        # self.log_formatter = logging.Formatter("%(asctime)s - [%(funcName)-16s] - [%(lineno)4d] - [%(levelname)8s] - %(message)s")
+        # self.log_formatter = logging.Formatter("[{asctime}.{msecs:03.0f}] [{funcName:^16s}] [{lineno:04d}] [{levelname:^9s}] {message}", style="{", datefmt="%Y-%m-%d %H:%M:%S")
+        self.log_formatter = logging.Formatter("{asctime}.{msecs:03.0f} | {funcName:^24s} | {lineno:04d} | {levelname:^9s} | {message}", style="{", datefmt="%Y-%m-%d %H:%M:%S")
 
         # Try to get configurations from os environment variables
-        log_file_name = os.environ['LOG_FILENAME'] if 'LOG_FILENAME' in os.environ else 'TICSLog.log'
-        directory = os.environ['LOG_FILE_DIR'] if 'LOG_FILE_DIR' in os.environ else '.\\'
-        max_filesize_str = os.environ['LOG_MAXSIZE'] if 'LOG_MAXSIZE' in os.environ else '5242880'
-        backupCount_str = os.environ['LOG_BACKUP_COUNT'] if 'LOG_BACKUP_COUNT' in os.environ else '10'
-        loggername = os.environ['LOGGER_NAME'] if 'LOGGER_NAME' in os.environ else 'TICSLog'
+        log_file_name = os.environ["LOG_FILENAME"] if "LOG_FILENAME" in os.environ else "TICSLog.log"
+        directory = os.environ["LOG_FILE_DIR"] if "LOG_FILE_DIR" in os.environ else ".\\"
+        max_filesize_str = os.environ["LOG_MAXSIZE"] if "LOG_MAXSIZE" in os.environ else "5242880"
+        backupCount_str = os.environ["LOG_BACKUP_COUNT"] if "LOG_BACKUP_COUNT" in os.environ else "10"
+        loggername = os.environ["LOGGER_NAME"] if "LOGGER_NAME" in os.environ else "TICSLog"
         try:
             max_filesize = int(max_filesize_str)
         except:
@@ -28,8 +28,8 @@ class TICSLogger:
         self.console_handler = logging.StreamHandler()
         self.console_handler.setLevel(logging.DEBUG)
         self.console_handler.setFormatter(self.log_formatter)
-        self.file_handler = RotatingFileHandler(logFile, mode='a', maxBytes=max_filesize,   # Max log file size: 5 MB (5242880 B) (5*1024*1024)
-                                        backupCount=backupCount, encoding=None, delay=0)
+        self.file_handler = RotatingFileHandler(logFile, mode="a", maxBytes=max_filesize,   # Max log file size: 5 MB (5242880 B) (5*1024*1024)
+                                        backupCount=backupCount, encoding="utf-8", delay=0)
         self.file_handler.setFormatter(self.log_formatter)
         self.file_handler.setLevel(logging.DEBUG)
 
@@ -93,29 +93,29 @@ class TICSLogger:
         self.file_handler.backupCount = backupCount
 
     def console_dbglevel(self, levelname):
-        if levelname.lower()=='debug':
+        if levelname.lower()=="debug":
             self.console_handler.setLevel(logging.DEBUG)
-        elif levelname.lower()=='info':
+        elif levelname.lower()=="info":
             self.console_handler.setLevel(logging.INFO)
-        elif levelname.lower()=='warning':
+        elif levelname.lower()=="warning":
             self.console_handler.setLevel(logging.WARNING)
-        elif levelname.lower()=='error':
+        elif levelname.lower()=="error":
             self.console_handler.setLevel(logging.ERROR)
-        elif levelname.lower()=='critical':
+        elif levelname.lower()=="critical":
             self.console_handler.setLevel(logging.CRITICAL)
         else:
-            print(f'Level is not defined in console_dbglevel')
+            print(f"Level is not defined in console_dbglevel")
 
     def file_dbglevel(self, levelname):
-        if levelname.lower()=='debug':
+        if levelname.lower()=="debug":
             self.file_handler.setLevel(logging.DEBUG)
-        elif levelname.lower()=='info':
+        elif levelname.lower()=="info":
             self.file_handler.setLevel(logging.INFO)
-        elif levelname.lower()=='warning':
+        elif levelname.lower()=="warning":
             self.file_handler.setLevel(logging.WARNING)
-        elif levelname.lower()=='error':
+        elif levelname.lower()=="error":
             self.file_handler.setLevel(logging.ERROR)
-        elif levelname.lower()=='critical':
+        elif levelname.lower()=="critical":
             self.file_handler.setLevel(logging.CRITICAL)
         else:
-            print(f'Level is not defined in file_dbglevel')
+            print(f"Level is not defined in file_dbglevel")

@@ -6,7 +6,7 @@ from ipaddress import IPv4Address
 
 def log_time():
     """ Returns date time with ms. Can be used for logging messages"""
-    return datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
 
 def readconfigfile(filename,section,key):
     config = configparser.ConfigParser()
@@ -46,26 +46,8 @@ def decrypt(password, ipaddress):
         output = None
     return output
 
-def alarm_internal(rclient, tag='internal', msg='', priority='Low', value=0):
+def alarm_internal(rclient, alm_channel="alarm_queue", tag="internal", msg="", priority="Low", value=0):
     func_name = inspect.stack()[1].function
     alm_ts = str(datetime.now())
-    alm_data = {'alm_tag':tag ,'value':value, 'alm_name':func_name, 'alm_desc':msg, 'alm_priority':priority, 'alm_ts':alm_ts}
-    rclient.publish('alarm_queue', str(alm_data))
-
-def get_config_db(session, tablename):
-    result =dict()
-    db_class = globals()[tablename]
-    try:
-        columns = [column.name for column in db_inspect(db_class).c]
-        table_pk = db_class.__pkCol__
-        rows = session.query(db_class).all()
-        for row in rows:
-            row_dict = row.__dict__
-            temp_dict = dict()
-            for item in columns:
-                if item != table_pk:
-                    temp_dict[item] = row_dict[item]
-            result[row_dict[table_pk]] = temp_dict
-    except Exception as e:
-        print(f'Error in getting config from DB, msg:{e}')
-    return result
+    alm_data = {"alm_tag":tag ,"value":value, "alm_name":func_name, "alm_desc":msg, "alm_priority":priority, "alm_ts":alm_ts}
+    rclient.publish(alm_channel, str(alm_data))
