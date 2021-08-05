@@ -1,5 +1,5 @@
 from datetime import datetime
-import configparser, socket, base64, inspect
+import configparser, base64, inspect, json
 from cryptography.fernet import Fernet
 from getmac import get_mac_address
 from ipaddress import IPv4Address
@@ -50,4 +50,4 @@ def alarm_internal(rclient, alm_channel="alarm_queue", tag="internal", msg="", p
     func_name = inspect.stack()[1].function
     alm_ts = str(datetime.now())
     alm_data = {"alm_tag":tag ,"value":value, "alm_name":func_name, "alm_desc":msg, "alm_priority":priority, "alm_ts":alm_ts}
-    rclient.publish(alm_channel, str(alm_data))
+    rclient.publish(alm_channel, json.dumps(alm_data))
