@@ -87,7 +87,7 @@ def check_license(config_file, application):
                     msg = f'This license is invalid for this machine'
                     return status, None, None, None, msg
                 else:
-                    if datetime.datetime.strptime(section['expire'], '%Y-%m-%d').date() >= datetime.datetime.now().date():
+                    if datetime.strptime(section['expire'], '%Y-%m-%d').date() >= datetime.now().date():
                         if application==section['application']:
                             status = 1
                             msg = f"License key Registed to {section['customer']} for Application: {section['application']} valid till: {section['expire']}"
