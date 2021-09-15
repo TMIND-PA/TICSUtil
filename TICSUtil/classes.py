@@ -1,6 +1,44 @@
 import logging, os
 from logging.handlers import RotatingFileHandler
+# from rich.logging import RichHandler
 import __main__
+
+class ConsoleFormatter(logging.Formatter):
+    
+    grey = "\x1b[38;21m"
+    yellow = "\x1b[33;21m"
+    red = "\x1b[31;21m"
+    bold_red = "\x1b[31;1m"
+    bold_green = "\x1b[32;21m"
+    reverse = "\x1b[7m"
+    bold = "\x1b[1m"
+    underline = "\x1b[4m"
+    reset = "\x1b[0m"
+    format_str = "{asctime}.{msecs:03.0f} - {funcName:^16s} - {lineno:04d} - {levelname:^9s} - {message}"
+
+    FORMATS = {
+        logging.DEBUG: grey + format_str + reset,
+        logging.INFO: bold_green + format_str + reset,
+        logging.WARNING: yellow + format_str + reset,
+        logging.ERROR: red + underline + format_str + reset,
+        logging.CRITICAL: bold_red + reverse + format_str + reset
+    }
+
+    def set_format_str(self, str):
+        self.FORMATS = {
+        logging.DEBUG: self.grey + str + self.reset,
+        logging.INFO: self.bold_green + str + self.reset,
+        logging.WARNING: self.yellow + str + self.reset,
+        logging.ERROR: self.red + self.underline + str + self.reset,
+        logging.CRITICAL: self.bold_red + self.reverse + str + self.reset
+    }
+        
+
+    def format(self, record):
+        log_fmt = self.FORMATS.get(record.levelno)
+        formatter = logging.Formatter(log_fmt, style="{", datefmt="%Y-%b-%d %H:%M:%S")
+        return formatter.format(record)
+
 class TICSLogger:
     def __init__(self, logger = None, filename =  None, dir = None, max_size = "5242880", max_num = "10"):
         
@@ -26,7 +64,11 @@ class TICSLogger:
 
         # self.log_formatter = logging.Formatter("%(asctime)s - [%(funcName)-16s] - [%(lineno)4d] - [%(levelname)8s] - %(message)s")
         # self.log_formatter = logging.Formatter("[{asctime}.{msecs:03.0f}] [{funcName:^16s}] [{lineno:04d}] [{levelname:^9s}] {message}", style="{", datefmt="%Y-%m-%d %H:%M:%S")
-        self.log_formatter = logging.Formatter("{asctime}.{msecs:03.0f} | {funcName:^24s} | {lineno:04d} | {levelname:^9s} | {message}", style="{", datefmt="%Y-%m-%d %H:%M:%S")
+        self.format_str = "{asctime}.{msecs:03.0f} | {funcName:^16s} | {lineno:04d} | {levelname:^9s} | {message}"
+        self.style = "{"
+        self.datefmt = "%Y-%m-%d %H:%M:%S"
+        self.log_formatter = logging.Formatter(self.format_str , style=self.style, datefmt=self.datefmt)
+        # self.log_fmt_console = logging.Formatter(self.format_str , style=self.style, datefmt=self.datefmt)
 
         # Try to get configurations from os environment variables
 
@@ -44,9 +86,12 @@ class TICSLogger:
         except:
             backupCount = 10
         logFile = os.path.join(directory,log_file_name) if os.path.exists(directory) else log_file_name
+        # self.console_handler = RichHandler(rich_tracebacks=True,show_path=False, show_time=False, markup=True)
         self.console_handler = logging.StreamHandler()
         self.console_handler.setLevel(logging.DEBUG)
-        self.console_handler.setFormatter(self.log_formatter)
+        console_formatter = ConsoleFormatter()
+        console_formatter.set_format_str(self.format_str)
+        self.console_handler.setFormatter(console_formatter)
         self.file_handler = RotatingFileHandler(logFile, mode="a", maxBytes=max_filesize,   # Max log file size: 5 MB (5242880 B) (5*1024*1024)
                                         backupCount=backupCount, encoding="utf-8", delay=0)
         self.file_handler.setFormatter(self.log_formatter)
