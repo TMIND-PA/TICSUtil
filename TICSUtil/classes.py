@@ -1,9 +1,27 @@
 import logging, os
 from logging.handlers import RotatingFileHandler
-
+import __main__
 class TICSLogger:
-    def __init__(self):
+    def __init__(self, logger = None, filename =  None, dir = None, max_size = "5242880", max_num = "10"):
         
+        if filename is None:
+            full_path = __main__.__file__
+            script_name = os.path.basename(os.path.realpath(full_path))
+            print(f"{script_name = }")    
+            filename = script_name[:-3] + ".log"
+
+        if dir is None:
+            full_path = __main__.__file__
+            dir = os.path.dirname(os.path.realpath(full_path))
+
+        if not os.path.exists(dir):
+            os.makedirs(dir, exist_ok=True)
+
+        if logger is None:
+            full_path = __main__.__file__
+            script_name = os.path.basename(os.path.realpath(full_path))
+            logger = script_name[:-3]
+
         # logging.basicConfig(datefmt="%d-%m-%Y %H:%M:%S")
 
         # self.log_formatter = logging.Formatter("%(asctime)s - [%(funcName)-16s] - [%(lineno)4d] - [%(levelname)8s] - %(message)s")
@@ -11,11 +29,12 @@ class TICSLogger:
         self.log_formatter = logging.Formatter("{asctime}.{msecs:03.0f} | {funcName:^24s} | {lineno:04d} | {levelname:^9s} | {message}", style="{", datefmt="%Y-%m-%d %H:%M:%S")
 
         # Try to get configurations from os environment variables
-        log_file_name = os.environ["LOG_FILENAME"] if "LOG_FILENAME" in os.environ else "TICSLog.log"
-        directory = os.environ["LOG_FILE_DIR"] if "LOG_FILE_DIR" in os.environ else ".\\"
-        max_filesize_str = os.environ["LOG_MAXSIZE"] if "LOG_MAXSIZE" in os.environ else "5242880"
-        backupCount_str = os.environ["LOG_BACKUP_COUNT"] if "LOG_BACKUP_COUNT" in os.environ else "10"
-        loggername = os.environ["LOGGER_NAME"] if "LOGGER_NAME" in os.environ else "TICSLog"
+
+        log_file_name = os.environ["LOG_FILENAME"] if "LOG_FILENAME" in os.environ else filename
+        directory = os.environ["LOG_FILE_DIR"] if "LOG_FILE_DIR" in os.environ else dir
+        max_filesize_str = os.environ["LOG_MAXSIZE"] if "LOG_MAXSIZE" in os.environ else max_size
+        backupCount_str = os.environ["LOG_BACKUP_COUNT"] if "LOG_BACKUP_COUNT" in os.environ else max_num
+        loggername = os.environ["LOGGER_NAME"] if "LOGGER_NAME" in os.environ else logger
         try:
             max_filesize = int(max_filesize_str)
         except:

@@ -2,6 +2,19 @@ from TICSUtil import log_time, TICSLogger, emoji
 
 # print(log_time(), "Starting test script...")
 
+# Old Method
+# Logger = TICSLogger()
+# Log = Logger.get_log
+# Log.info(f'Logger Configured...')
+# Log.log(50 , f'Sample LOG message')
+# Log.debug(f'Sample DEBUG message')
+# Log.info(f'Sample INFO message')
+# Log.warning(f'Sample WARNING message')
+# Log.critical(f'Sample CRITICAL message')
+# Log.info(emoji["namaste"])
+
+# New Method
+# Logger = TICSLogger(filename="testlog.log", dir="./logs")
 Logger = TICSLogger()
 Log = Logger.get_log
 Log.info(f'Logger Configured...')
@@ -11,6 +24,7 @@ Log.info(f'Sample INFO message')
 Log.warning(f'Sample WARNING message')
 Log.critical(f'Sample CRITICAL message')
 Log.info(emoji["namaste"])
+
 
 try:
     a = 1/0
