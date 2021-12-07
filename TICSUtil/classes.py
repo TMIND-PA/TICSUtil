@@ -6,10 +6,11 @@ import __main__
 class ConsoleFormatter(logging.Formatter):
     
     grey = "\x1b[38;21m"
-    yellow = "\x1b[33;21m"
-    red = "\x1b[31;21m"
+    yellow = "\x1b[33m"
+    red = "\x1b[31m"
     bold_red = "\x1b[31;1m"
-    bold_green = "\x1b[32;21m"
+    bold_green = "\x1b[32;1m"
+    green = "\x1b[32m"
     reverse = "\x1b[7m"
     bold = "\x1b[1m"
     underline = "\x1b[4m"
@@ -18,21 +19,20 @@ class ConsoleFormatter(logging.Formatter):
 
     FORMATS = {
         logging.DEBUG: grey + format_str + reset,
-        logging.INFO: bold_green + format_str + reset,
+        logging.INFO: green + format_str + reset,
         logging.WARNING: yellow + format_str + reset,
-        logging.ERROR: red + underline + format_str + reset,
-        logging.CRITICAL: bold_red + reverse + format_str + reset
+        logging.ERROR: red + format_str + reset,
+        logging.CRITICAL: bold_red + reverse + format_str + reset,
     }
 
     def set_format_str(self, str):
         self.FORMATS = {
-        logging.DEBUG: self.grey + str + self.reset,
-        logging.INFO: self.bold_green + str + self.reset,
-        logging.WARNING: self.yellow + str + self.reset,
-        logging.ERROR: self.red + self.underline + str + self.reset,
-        logging.CRITICAL: self.bold_red + self.reverse + str + self.reset
-    }
-        
+            logging.DEBUG: self.grey + str + self.reset,
+            logging.INFO: self.green + str + self.reset,
+            logging.WARNING: self.yellow + str + self.reset,
+            logging.ERROR: self.red + str + self.reset,
+            logging.CRITICAL: self.bold_red + self.reverse + str + self.reset,
+        }
 
     def format(self, record):
         log_fmt = self.FORMATS.get(record.levelno)
@@ -40,12 +40,12 @@ class ConsoleFormatter(logging.Formatter):
         return formatter.format(record)
 
 class TICSLogger:
-    def __init__(self, logger = None, filename =  None, dir = None, max_size = "5242880", max_num = "10"):
-        
+    def __init__(self, logger=None, filename=None, dir=None, max_size="5242880", max_num="10", rich_console=False):
+
         if filename is None:
             full_path = __main__.__file__
             script_name = os.path.basename(os.path.realpath(full_path))
-            print(f"{script_name = }")    
+            # print(f"{script_name = }")    
             filename = script_name[:-3] + ".log"
 
         if dir is None:
@@ -67,11 +67,20 @@ class TICSLogger:
         self.format_str = "{asctime}.{msecs:03.0f} | {funcName:^16s} | {lineno:04d} | {levelname:^9s} | {message}"
         self.style = "{"
         self.datefmt = "%Y-%m-%d %H:%M:%S"
-        self.log_formatter = logging.Formatter(self.format_str , style=self.style, datefmt=self.datefmt)
-        # self.log_fmt_console = logging.Formatter(self.format_str , style=self.style, datefmt=self.datefmt)
+        self.log_formatter = logging.Formatter(self.format_str, style=self.style, datefmt=self.datefmt)
 
-        # Try to get configurations from os environment variables
+        # Set console formatting
+        self.console_handler = logging.StreamHandler()
+        self.console_handler.setLevel(logging.DEBUG)
 
+        if rich_console:
+            console_formatter = ConsoleFormatter()
+            console_formatter.set_format_str(self.format_str)
+            self.console_handler.setFormatter(console_formatter)
+        else:
+            self.console_handler.setFormatter(self.log_formatter)
+
+        # Try to get configurations from os environment variables for file logging
         log_file_name = os.environ["LOG_FILENAME"] if "LOG_FILENAME" in os.environ else filename
         directory = os.environ["LOG_FILE_DIR"] if "LOG_FILE_DIR" in os.environ else dir
         max_filesize_str = os.environ["LOG_MAXSIZE"] if "LOG_MAXSIZE" in os.environ else max_size
@@ -85,15 +94,16 @@ class TICSLogger:
             backupCount = int(backupCount_str)
         except:
             backupCount = 10
-        logFile = os.path.join(directory,log_file_name) if os.path.exists(directory) else log_file_name
-        # self.console_handler = RichHandler(rich_tracebacks=True,show_path=False, show_time=False, markup=True)
-        self.console_handler = logging.StreamHandler()
-        self.console_handler.setLevel(logging.DEBUG)
-        console_formatter = ConsoleFormatter()
-        console_formatter.set_format_str(self.format_str)
-        self.console_handler.setFormatter(console_formatter)
-        self.file_handler = RotatingFileHandler(logFile, mode="a", maxBytes=max_filesize,   # Max log file size: 5 MB (5242880 B) (5*1024*1024)
-                                        backupCount=backupCount, encoding="utf-8", delay=0)
+        logFile = os.path.join(directory, log_file_name) if os.path.exists(directory) else log_file_name
+
+        self.file_handler = RotatingFileHandler(
+            logFile,
+            mode="a",
+            maxBytes=max_filesize,  # Max log file size: 5 MB (5242880 B) (5*1024*1024)
+            backupCount=backupCount,
+            encoding="utf-8",
+            delay=0,
+        )
         self.file_handler.setFormatter(self.log_formatter)
         self.file_handler.setLevel(logging.DEBUG)
 
@@ -105,7 +115,7 @@ class TICSLogger:
 
     def set_dbglevel_debug(self):
         self.get_log.setLevel(logging.DEBUG)
-        
+
     def set_dbglevel_info(self):
         self.get_log.setLevel(logging.INFO)
 
@@ -118,7 +128,7 @@ class TICSLogger:
     def set_dbglevel_critical(self):
         self.get_log.setLevel(logging.CRITICAL)
 
-    #set level of console logging
+    # set level of console logging
     def console_dbglevel_debug(self):
         self.console_handler.setLevel(logging.DEBUG)
 
@@ -157,29 +167,29 @@ class TICSLogger:
         self.file_handler.backupCount = backupCount
 
     def console_dbglevel(self, levelname):
-        if levelname.lower()=="debug":
+        if levelname.lower() == "debug":
             self.console_handler.setLevel(logging.DEBUG)
-        elif levelname.lower()=="info":
+        elif levelname.lower() == "info":
             self.console_handler.setLevel(logging.INFO)
-        elif levelname.lower()=="warning":
+        elif levelname.lower() == "warning":
             self.console_handler.setLevel(logging.WARNING)
-        elif levelname.lower()=="error":
+        elif levelname.lower() == "error":
             self.console_handler.setLevel(logging.ERROR)
-        elif levelname.lower()=="critical":
+        elif levelname.lower() == "critical":
             self.console_handler.setLevel(logging.CRITICAL)
         else:
             print(f"Level is not defined in console_dbglevel")
 
     def file_dbglevel(self, levelname):
-        if levelname.lower()=="debug":
+        if levelname.lower() == "debug":
             self.file_handler.setLevel(logging.DEBUG)
-        elif levelname.lower()=="info":
+        elif levelname.lower() == "info":
             self.file_handler.setLevel(logging.INFO)
-        elif levelname.lower()=="warning":
+        elif levelname.lower() == "warning":
             self.file_handler.setLevel(logging.WARNING)
-        elif levelname.lower()=="error":
+        elif levelname.lower() == "error":
             self.file_handler.setLevel(logging.ERROR)
-        elif levelname.lower()=="critical":
+        elif levelname.lower() == "critical":
             self.file_handler.setLevel(logging.CRITICAL)
         else:
             print(f"Level is not defined in file_dbglevel")
